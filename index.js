@@ -47,13 +47,13 @@ app.get("/posts/:id", async (req, res) => {
 
 // Create a new user
 app.post("/posts", async (req, res) => {
-  const { first_name, last_name, age } = req.body;
+  const { author, title, content, cover } = req.body;
   try {
-    const newUser = await queryDB(
-      "INSERT INTO posts (first_name, last_name, age) VALUES ($1, $2, $3) RETURNING *",
-      [first_name, last_name, age]
+    const newPost = await queryDB(
+      "INSERT INTO posts (author, title, content, cover) VALUES ($1, $2, $3, $4) RETURNING *",
+      [author, title, content, cover]
     );
-    res.status(201).json(newUser[0]);
+    res.status(201).json(newPost[0]);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Database insertion failed" });
@@ -63,15 +63,15 @@ app.post("/posts", async (req, res) => {
 // Update user by ID
 app.put("/posts/:id", async (req, res) => {
   const { id } = req.params;
-  const { first_name, last_name, age } = req.body;
+  const { author, title, content, cover } = req.body;
 
   try {
     const updatedUser = await queryDB(
-      "UPDATE posts SET first_name = $1, last_name = $2, age = $3 WHERE id = $4 RETURNING *",
-      [first_name, last_name, age, id]
+      "UPDATE posts SET author = $1, title = $2, content = $3 cover = $4 WHERE id=$5 RETURNING *",
+      [author, title, content, cover]
     );
     if (!updatedUser.length) {
-      return res.status(404).json({ message: `User with ID ${id} not found` });
+      return res.status(404).json({ message: `posts with ID ${id} not found` });
     }
     res.json(updatedUser[0]);
   } catch (error) {
@@ -90,7 +90,7 @@ app.delete("/posts/:id", async (req, res) => {
       [id]
     );
     if (!deletedUser.length) {
-      return res.status(404).json({ message: `User with ID ${id} not found` });
+      return res.status(404).json({ message: `posts with ID ${id} not found` });
     }
     res.json(deletedUser[0]);
   } catch (error) {
