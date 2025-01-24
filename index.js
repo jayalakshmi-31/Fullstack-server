@@ -36,7 +36,7 @@ app.get("/posts/:id", async (req, res) => {
   try {
     const user = await queryDB("SELECT * FROM posts WHERE id = $1", [id]);
     if (!user.length) {
-      return res.status(404).json({ message: `User with ID ${id} not found` });
+      return res.status(404).json({ message: `posts with ID ${id} not found` });
     }
     res.json(user[0]);
   } catch (error) {
@@ -67,7 +67,7 @@ app.put("/posts/:id", async (req, res) => {
 
   try {
     const updatedUser = await queryDB(
-      "UPDATE posts SET author = $1, title = $2, content = $3 cover = $4 WHERE id=$5 RETURNING *",
+      "UPDATE posts SET author = $1, title = $2, content = $3 cover = $4 RETURNING *",
       [author, title, content, cover]
     );
     if (!updatedUser.length) {
